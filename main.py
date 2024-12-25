@@ -1,1 +1,3 @@
-git clone https://github.com/IftyER/youtube-live-playlist.git
+git add main.py
+git commit -m "Added YouTube live stream script"
+git push
