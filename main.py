@@ -4,14 +4,25 @@ from googleapiclient.discovery import build
 import os
 
 # Replace with your YouTube Data API key
-API_KEY = "YOUR_API_KEY"
+API_KEY = "AIzaSyCCEdOKSh_Axvs5qF87xtjWVvAmCGysc6U"
 # List of channel IDs you want to monitor
 CHANNEL_IDS = [
-    "UC_x5XG1OV2P6uZZ5FSM9Ttw",  # Google Developers Channel
-    "UCOhHO2ICt0ti9KAh-QHvttg",  # Another Example Channel
+    "UCt8llfhkf9LRzjTEnbG2qnQ",  # Channel 1
+    "UCb2O5Uo4a26CdTE7_2QA-jA",  # Channel 2
+    "UCHLqIOMPk20w-6cFgkA90jw",  # Channel 3
+    "UC0V3IJCnr6ZNjB9t_GLhFFA",  # Channel 4
+    "UCWVqdPTigfQ-cSNwG7O9MeA",  # Channel 5
+    "UC2P5Fd5g41Gtdqf0Uzh8Qaw",  # Channel 6
+    "UCxHoBXkY88Tb8z1Ssj6CWsQ",  # Channel 7
+    "UCN6sm8iHiPd0cnoUardDAnw",  # Channel 8
+    "UCtqvtAVmad5zywaziN6CbfA",  # Channel 9
+    "UCUvXoiDEKI8VZJrr58g4VAw",  # Channel 10
+    "UC8NcXMG3A3f2aFQyGTpSNww",  # Channel 11
+    "UCmCCTsDl-eCKw91shC7ZmMw",  # Channel 12
+    "UCATUkaOHwO9EP_W87zCiPbA",  # Channel 13
 ]
 # Playlist ID where live streams will be added
-PLAYLIST_ID = "YOUR_PLAYLIST_ID"
+PLAYLIST_ID = "PLhDI33oYisToytKQ-gNFqG9Mx4XmOCmNA"
 
 def get_live_videos(api_key, channel_id):
     """
@@ -64,3 +75,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
