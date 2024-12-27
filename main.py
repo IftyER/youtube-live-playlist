@@ -1,10 +1,10 @@
-# main.py
-
 from googleapiclient.discovery import build
 import os
 
-# Replace with your YouTube Data API key
-API_KEY = "AIzaSyCCEdOKSh_Axvs5qF87xtjWVvAmCGysc6U"
+# Fetch sensitive information from environment variables
+API_KEY = os.getenv("API_KEY")
+PLAYLIST_ID = os.getenv("PLAYLIST_ID")
+
 # List of channel IDs you want to monitor
 CHANNEL_IDS = [
     "UCt8llfhkf9LRzjTEnbG2qnQ",  # Channel 1
@@ -21,58 +21,64 @@ CHANNEL_IDS = [
     "UCmCCTsDl-eCKw91shC7ZmMw",  # Channel 12
     "UCATUkaOHwO9EP_W87zCiPbA",  # Channel 13
 ]
-# Playlist ID where live streams will be added
-PLAYLIST_ID = "PLhDI33oYisToytKQ-gNFqG9Mx4XmOCmNA"
 
-def get_live_videos(api_key, channel_id):
+def get_live_videos(youtube, channel_id):
     """
     Fetches live videos from a given channel.
     """
-    youtube = build('youtube', 'v3', developerKey=api_key)
-    request = youtube.search().list(
-        part="snippet",
-        channelId=channel_id,
-        eventType="live",
-        type="video",
-        maxResults=50
-    )
-    response = request.execute()
-    return [item['id']['videoId'] for item in response.get('items', [])]
+    try:
+        request = youtube.search().list(
+            part="snippet",
+            channelId=channel_id,
+            eventType="live",
+            type="video",
+            maxResults=50
+        )
+        response = request.execute()
+        return [item['id']['videoId'] for item in response.get('items', [])]
+    except Exception as e:
+        print(f"Error fetching live videos for channel {channel_id}: {e}")
+        return []
 
-def add_video_to_playlist(api_key, playlist_id, video_id):
+def add_video_to_playlist(youtube, playlist_id, video_id):
     """
     Adds a video to a specified playlist.
     """
-    youtube = build('youtube', 'v3', developerKey=api_key)
-    request = youtube.playlistItems().insert(
-        part="snippet",
-        body={
-            "snippet": {
-                "playlistId": playlist_id,
-                "resourceId": {
-                    "kind": "youtube#video",
-                    "videoId": video_id
+    try:
+        request = youtube.playlistItems().insert(
+            part="snippet",
+            body={
+                "snippet": {
+                    "playlistId": playlist_id,
+                    "resourceId": {
+                        "kind": "youtube#video",
+                        "videoId": video_id
+                    }
                 }
             }
-        }
-    )
-    response = request.execute()
-    return response
+        )
+        response = request.execute()
+        print(f"Successfully added video {video_id} to playlist.")
+        return response
+    except Exception as e:
+        print(f"Error adding video {video_id} to playlist: {e}")
+        return None
 
 def main():
     """
     Main function to fetch live videos from channels and add them to a playlist.
     """
+    if not API_KEY or not PLAYLIST_ID:
+        print("API_KEY and PLAYLIST_ID must be set as environment variables.")
+        return
+
+    youtube = build('youtube', 'v3', developerKey=API_KEY)
+    
     for channel_id in CHANNEL_IDS:
-        live_videos = get_live_videos(API_KEY, channel_id)
+        print(f"Checking live videos for channel: {channel_id}")
+        live_videos = get_live_videos(youtube, channel_id)
         for video_id in live_videos:
-            try:
-                print(f"Adding video {video_id} to playlist {PLAYLIST_ID}")
-                response = add_video_to_playlist(API_KEY, PLAYLIST_ID, video_id)
-                print("Added successfully:", response)
-            except Exception as e:
-                print(f"Failed to add video {video_id}: {e}")
+            add_video_to_playlist(youtube, PLAYLIST_ID, video_id)
 
 if __name__ == "__main__":
     main()
-
