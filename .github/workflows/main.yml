@@ -19,6 +19,6 @@ jobs:
         run: pip install google-api-python-client
       - name: Run script
         env:
-          API_KEY: "AIzaSyCCEdOKSh_Axvs5qF87xtjWVvAmCGysc6U"  # Secure API key
-          PLAYLIST_ID: "PLhDI33oYisToytKQ-gNFqG9Mx4XmOCmNA"  # Secure playlist ID
+          API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          PLAYLIST_ID: ${{ secrets.PLAYLIST_ID }}
         run: python main.py
