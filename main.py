@@ -1,31 +1,18 @@
-from googleapiclient.discovery import build
 import os
+from googleapiclient.discovery import build
 
 # Fetch sensitive information from environment variables
-YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
+API_KEY = os.getenv("YOUTUBE_API_KEY")
 PLAYLIST_ID = os.getenv("PLAYLIST_ID")
 
-# List of channel IDs you want to monitor
-CHANNEL_IDS = [
-    "UCt8llfhkf9LRzjTEnbG2qnQ",  # Channel 1
-    "UCb2O5Uo4a26CdTE7_2QA-jA",  # Channel 2
-    "UCHLqIOMPk20w-6cFgkA90jw",  # Channel 3
-    "UC0V3IJCnr6ZNjB9t_GLhFFA",  # Channel 4
-    "UCWVqdPTigfQ-cSNwG7O9MeA",  # Channel 5
-    "UC2P5Fd5g41Gtdqf0Uzh8Qaw",  # Channel 6
-    "UCxHoBXkY88Tb8z1Ssj6CWsQ",  # Channel 7
-    "UCN6sm8iHiPd0cnoUardDAnw",  # Channel 8
-    "UCtqvtAVmad5zywaziN6CbfA",  # Channel 9
-    "UCUvXoiDEKI8VZJrr58g4VAw",  # Channel 10
-    "UC8NcXMG3A3f2aFQyGTpSNww",  # Channel 11
-    "UCmCCTsDl-eCKw91shC7ZmMw",  # Channel 12
-    "UCATUkaOHwO9EP_W87zCiPbA",  # Channel 13
-]
+# Validate environment variables
+if not API_KEY or not PLAYLIST_ID:
+    raise ValueError("YOUTUBE_API_KEY and PLAYLIST_ID must be set as environment variables.")
+
+# Example channel IDs
+CHANNEL_IDS = ["UCt8llfhkf9LRzjTEnbG2qnQ", "UCb2O5Uo4a26CdTE7_2QA-jA"]
 
 def get_live_videos(youtube, channel_id):
-    """
-    Fetches live videos from a given channel.
-    """
     try:
         request = youtube.search().list(
             part="snippet",
@@ -41,9 +28,6 @@ def get_live_videos(youtube, channel_id):
         return []
 
 def add_video_to_playlist(youtube, playlist_id, video_id):
-    """
-    Adds a video to a specified playlist.
-    """
     try:
         request = youtube.playlistItems().insert(
             part="snippet",
@@ -65,15 +49,8 @@ def add_video_to_playlist(youtube, playlist_id, video_id):
         return None
 
 def main():
-    """
-    Main function to fetch live videos from channels and add them to a playlist.
-    """
-    if not YOUTUBE_API_KEY or not PLAYLIST_ID:
-        print("YOUTUBE_API_KEY and PLAYLIST_ID must be set as environment variables.")
-        return
+    youtube = build("youtube", "v3", developerKey=API_KEY)
 
-    youtube = build('youtube', 'v3', developerKey=YOUTUBE_API_KEY)
-    
     for channel_id in CHANNEL_IDS:
         print(f"Checking live videos for channel: {channel_id}")
         live_videos = get_live_videos(youtube, channel_id)
