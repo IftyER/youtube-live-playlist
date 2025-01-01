@@ -3,11 +3,11 @@ name: Update YouTube Playlist
 on:
   schedule:
     - cron: "0 * * * *"  # Run every hour
-  workflow_dispatch:  # Allows manual trigger from the GitHub UI
+  workflow_dispatch:      # Allow manual triggering
 
 jobs:
   run-script:
-    runs-on: ubuntu-22.04  # Use a stable version of Ubuntu
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -16,9 +16,9 @@ jobs:
         with:
           python-version: '3.x'
       - name: Install dependencies
-        run: pip install google-api-python-client
+        run: pip install google-api-python-client google-auth google-auth-oauthlib
       - name: Run script
-        env:
-          API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-          PLAYLIST_ID: ${{ secrets.PLAYLIST_ID }}
+        env:  # Pass environment variables to the script
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}  # Retrieve from GitHub Secrets
+          PLAYLIST_ID: ${{ secrets.PLAYLIST_ID }}          # Retrieve from GitHub Secrets
         run: python main.py
