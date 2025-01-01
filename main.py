@@ -1,9 +1,8 @@
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
+from google.oauth2.service_account import Credentials
 import os
 
-# Define the required scopes
+# Define the scopes needed by the app
 SCOPES = ["https://www.googleapis.com/auth/youtube.force-ssl"]
 
 # List of channel IDs you want to monitor
@@ -23,25 +22,8 @@ CHANNEL_IDS = [
     "UCATUkaOHwO9EP_W87zCiPbA",  # Channel 13
 ]
 
-# Fetch playlist ID from the environment variable
-PLAYLIST_ID = os.getenv("PLAYLIST_ID")
-
-def authenticate():
-    """
-    Handles OAuth authentication and returns an authenticated YouTube client.
-    """
-    creds = None
-    if os.path.exists("token.json"):
-        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file("client_secrets.json", SCOPES)
-            creds = flow.run_console()
-        with open("token.json", "w") as token:
-            token.write(creds.to_json())
-    return build("youtube", "v3", credentials=creds)
+# Playlist ID where live streams will be added
+PLAYLIST_ID = "PLhDI33oYisToytKQ-gNFqG9Mx4XmOCmNA"
 
 def get_live_videos(youtube, channel_id):
     """
@@ -89,12 +71,16 @@ def main():
     """
     Main function to fetch live videos from channels and add them to a playlist.
     """
-    if not PLAYLIST_ID:
-        print("PLAYLIST_ID must be set as an environment variable.")
-        return
+    # Set credentials from the JSON key file
+    creds = None
+    if os.path.exists('credentials.json'):
+        creds = Credentials.from_service_account_file(
+            'credentials.json', scopes=SCOPES)
 
-    youtube = authenticate()
-    
+    # Use the credentials to build the API client
+    youtube = build('youtube', 'v3', credentials=creds)
+
+    # Iterate through each channel and add live videos to the playlist
     for channel_id in CHANNEL_IDS:
         print(f"Checking live videos for channel: {channel_id}")
         live_videos = get_live_videos(youtube, channel_id)
