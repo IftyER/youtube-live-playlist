@@ -2,7 +2,7 @@ from googleapiclient.discovery import build
 import os
 
 # Fetch sensitive information from environment variables
-API_KEY = os.getenv("API_KEY")
+YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 PLAYLIST_ID = os.getenv("PLAYLIST_ID")
 
 # List of channel IDs you want to monitor
@@ -69,10 +69,10 @@ def main():
     Main function to fetch live videos from channels and add them to a playlist.
     """
     if not API_KEY or not PLAYLIST_ID:
-        print("API_KEY and PLAYLIST_ID must be set as environment variables.")
+        print("YOUTUBE_API_KEY and PLAYLIST_ID must be set as environment variables.")
         return
 
-    youtube = build('youtube', 'v3', developerKey=API_KEY)
+    youtube = build('youtube', 'v3', developerKey=YOUTUBE_API_KEY)
     
     for channel_id in CHANNEL_IDS:
         print(f"Checking live videos for channel: {channel_id}")
