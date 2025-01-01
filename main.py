@@ -1,9 +1,10 @@
+from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from google.oauth2.service_account import Credentials
 import os
 
-# Define the scopes needed by the app
-SCOPES = ["https://www.googleapis.com/auth/youtube.force-ssl"]
+# Fetch sensitive information from environment variables
+SERVICE_ACCOUNT_JSON = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")
+PLAYLIST_ID = os.getenv("PLAYLIST_ID")
 
 # List of channel IDs you want to monitor
 CHANNEL_IDS = [
@@ -21,9 +22,6 @@ CHANNEL_IDS = [
     "UCmCCTsDl-eCKw91shC7ZmMw",  # Channel 12
     "UCATUkaOHwO9EP_W87zCiPbA",  # Channel 13
 ]
-
-# Playlist ID where live streams will be added
-PLAYLIST_ID = "PLhDI33oYisToytKQ-gNFqG9Mx4XmOCmNA"
 
 def get_live_videos(youtube, channel_id):
     """
@@ -71,16 +69,17 @@ def main():
     """
     Main function to fetch live videos from channels and add them to a playlist.
     """
-    # Set credentials from the JSON key file
-    creds = None
-    if os.path.exists('credentials.json'):
-        creds = Credentials.from_service_account_file(
-            'credentials.json', scopes=SCOPES)
+    if not SERVICE_ACCOUNT_JSON or not PLAYLIST_ID:
+        print("SERVICE_ACCOUNT_JSON and PLAYLIST_ID must be set as environment variables.")
+        return
 
-    # Use the credentials to build the API client
-    youtube = build('youtube', 'v3', credentials=creds)
+    # Use service account to authenticate
+    credentials = service_account.Credentials.from_service_account_info(
+        json.loads(SERVICE_ACCOUNT_JSON), scopes=["https://www.googleapis.com/auth/youtube.force-ssl"]
+    )
 
-    # Iterate through each channel and add live videos to the playlist
+    youtube = build('youtube', 'v3', credentials=credentials)
+    
     for channel_id in CHANNEL_IDS:
         print(f"Checking live videos for channel: {channel_id}")
         live_videos = get_live_videos(youtube, channel_id)
