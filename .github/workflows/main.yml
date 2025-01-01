@@ -7,24 +7,23 @@ on:
 
 jobs:
   run-script:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-22.04  # Use a stable version of Ubuntu
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+      
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
-
+      
       - name: Install dependencies
-        run: pip install google-auth google-auth-oauthlib google-api-python-client
-
-      - name: Decode client secrets
-        # Decode the Base64 client_secrets.json and save it
-        run: echo "${{ secrets.CLIENT_SECRETS_BASE64 }}" | base64 --decode > client_secrets.json
-
+        run: pip install google-api-python-client
+      
+      - name: Create credentials.json from secret
+        run: echo "${{ secrets.GOOGLE_CREDENTIALS_JSON }}" > credentials.json  # Write the secret content to a file
+      
       - name: Run script
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/client_secrets.json
+          GOOGLE_APPLICATION_CREDENTIALS: "./credentials.json"  # Use the credentials for authentication
         run: python main.py
