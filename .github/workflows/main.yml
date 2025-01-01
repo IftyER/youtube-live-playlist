@@ -11,19 +11,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
-      
       - name: Install dependencies
         run: pip install google-api-python-client
-      
-      - name: Create credentials.json from secret
-        run: echo "${{ secrets.GOOGLE_CREDENTIALS_JSON }}" > credentials.json  # Write the secret content to a file
-      
+      - name: Create service account JSON file
+        run: echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}" > service_account.json
       - name: Run script
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: "./credentials.json"  # Use the credentials for authentication
+          PLAYLIST_ID: "PLhDI33oYisToytKQ-gNFqG9Mx4XmOCmNA"
         run: python main.py
