@@ -21,5 +21,6 @@ jobs:
         run: echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}" > service_account.json
       - name: Run script
         env:
-          PLAYLIST_ID: "PLhDI33oYisToytKQ-gNFqG9Mx4XmOCmNA"
+          SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          PLAYLIST_ID: ${{ secrets.PLAYLIST_ID }}
         run: python main.py
