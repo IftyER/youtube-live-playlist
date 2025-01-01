@@ -68,7 +68,7 @@ def main():
     """
     Main function to fetch live videos from channels and add them to a playlist.
     """
-    if not API_KEY or not PLAYLIST_ID:
+    if not YOUTUBE_API_KEY or not PLAYLIST_ID:
         print("YOUTUBE_API_KEY and PLAYLIST_ID must be set as environment variables.")
         return
 
