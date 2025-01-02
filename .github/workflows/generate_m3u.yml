@@ -28,3 +28,12 @@ jobs:
 
       - name: Run Script
         run: python generate_m3u.py
+
+      - name: Print working directory
+        run: pwd
+
+      - name: Upload playlist.m3u as an artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: playlist
+          path: playlist.m3u
