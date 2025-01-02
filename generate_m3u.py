@@ -19,7 +19,7 @@ youtube_urls = [
     "https://www.youtube.com/@livedeshtv/live"
 ]
 
-# Output M3U file
+# Output M3U file path (this will be saved in the repository directory)
 output_file = "playlist.m3u"
 
 def extract_m3u8_links(youtube_urls):
@@ -28,7 +28,7 @@ def extract_m3u8_links(youtube_urls):
     for url in youtube_urls:
         try:
             print(f"Extracting stream for: {url}")
-            command = ["yt-dlp", "--cookies", "cookies.txt", "-g", url]  # Use cookies.json
+            command = ["yt-dlp", "--cookies", "cookies.txt", "-g", url]
             result = subprocess.run(command, capture_output=True, text=True)
             if result.returncode == 0:
                 m3u8_links.append(result.stdout.strip())
@@ -50,7 +50,7 @@ def generate_m3u_file(m3u8_links, output_file):
 def main():
     """Main function to generate the playlist."""
     if not shutil.which("yt-dlp"):
-        print("yt-dlp is not installed. Install it using `pip install yt-dlp`.")
+        print("yt-dlp is not installed. Install it using `pip install yt-dlp`.") 
         return
 
     m3u8_links = extract_m3u8_links(youtube_urls)
