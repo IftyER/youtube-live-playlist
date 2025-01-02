@@ -1,10 +1,9 @@
-name: Generate M3U Playlist
+name: Generate and Save M3U Playlist
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  schedule:
+    - cron: '0 */3 * * *'  # Runs every 3 hours
+  workflow_dispatch:  # Allows manual trigger
 
 jobs:
   build:
@@ -26,14 +25,16 @@ jobs:
         env:
           COOKIES_TXT: ${{ secrets.COOKIES_TXT }}
 
-      - name: Run Script
+      - name: Run Script to Generate Playlist
         run: python generate_m3u.py
 
-      - name: Print working directory
-        run: pwd
+      - name: Commit and Push playlist.m3u to Repository
+        run: |
+          git config --global user.name "Your GitHub Actions Bot"
+          git config --global user.email "your-email@example.com"
+          git add playlist.m3u
+          git commit -m "Update playlist.m3u"
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Automatically available to GitHub Actions
 
-      - name: Upload playlist.m3u as an artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: playlist
-          path: playlist.m3u
