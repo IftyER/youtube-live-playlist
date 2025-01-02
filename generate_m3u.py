@@ -28,7 +28,7 @@ def extract_m3u8_links(youtube_urls):
     for url in youtube_urls:
         try:
             print(f"Extracting stream for: {url}")
-            command = ["yt-dlp", "-g", url]
+            command = ["yt-dlp", "--cookies", "path_to_cookies.txt", "-g", url]
             result = subprocess.run(command, capture_output=True, text=True)
             if result.returncode == 0:
                 m3u8_links.append(result.stdout.strip())
