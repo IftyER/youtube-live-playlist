@@ -21,10 +21,10 @@ jobs:
       - name: Install yt-dlp
         run: pip install yt-dlp
 
-      - name: Create cookies.txt from secrets
-        run: echo "$COOKIES_FILE" > cookies.txt
+      - name: Create cookies.json from secrets
+        run: echo "$COOKIES_JSON" > cookies.json
         env:
-          COOKIES_FILE: ${{ secrets.COOKIES_FILE }}
+          COOKIES_JSON: ${{ secrets.COOKIES_JSON }}
 
       - name: Run Script
         run: python generate_m3u.py
