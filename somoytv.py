@@ -8,7 +8,7 @@ youtube_urls = [
 ]
 
 # Output M3U file path (this will be saved in the repository directory)
-output_file = "playlist.m3u"
+output_file = "somoytv.m3u8"
 
 def extract_m3u8_links(youtube_urls):
     """Extracts .m3u8 links from YouTube Live URLs."""
