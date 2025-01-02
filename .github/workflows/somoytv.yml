@@ -25,7 +25,7 @@ jobs:
         env:
           COOKIES_TXT: ${{ secrets.COOKIES_TXT }}
 
-      - name: Run Script to Generate Playlist
+      - name: Somoy TV
         run: python somoytv.py
 
       - name: Commit and Push somoytv.m3u8 to Repository
