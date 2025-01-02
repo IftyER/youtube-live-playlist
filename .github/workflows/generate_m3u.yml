@@ -1,4 +1,4 @@
-name: Somoy TV
+name: Generate and Save M3U Playlist
 
 on:
   schedule:
@@ -25,16 +25,15 @@ jobs:
         env:
           COOKIES_TXT: ${{ secrets.COOKIES_TXT }}
 
-      - name: Somoy TV
-        run: python somoytv.py
+      - name: Run Script to Generate Playlist
+        run: python generate_m3u.py
 
-      - name: Commit and Push somoytv.m3u8 to Repository
+      - name: Commit and Push playlist.m3u to Repository
         run: |
           git config --global user.name "Your GitHub Actions Bot"
           git config --global user.email "your-email@example.com"
-          git add somoytv.m3u8
-          git commit -m "Update somoytv.m3u8"
+          git add playlist.m3u
+          git commit -m "Update playlist.m3u"
           git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Automatically available to GitHub Actions
-
