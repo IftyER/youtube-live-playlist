@@ -28,7 +28,7 @@ jobs:
       - name: Run Script to Generate Playlist
         run: python somoytv.py
 
-      - name: Commit and Push playlist.m3u to Repository
+      - name: Commit and Push playlist.m3u8 to Repository
         run: |
           git config --global user.name "Your GitHub Actions Bot"
           git config --global user.email "your-email@example.com"
