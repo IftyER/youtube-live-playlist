@@ -25,15 +25,30 @@ jobs:
         env:
           COOKIES_TXT: ${{ secrets.COOKIES_TXT }}
 
+      - name: Verify cookies.txt format
+        run: |
+          head -n 1 cookies.txt
+          if ! grep -q "^# Netscape HTTP Cookie File" cookies.txt; then
+            echo "Error: cookies.txt is not in Netscape format."
+            exit 1
+          fi
+
       - name: Run Script to Generate Playlist
         run: python generate_m3u.py
+
+      - name: Verify Playlist Generation
+        run: |
+          if [ ! -f playlist.m3u ]; then
+            echo "Error: playlist.m3u was not generated."
+            exit 1
+          fi
 
       - name: Commit and Push playlist.m3u to Repository
         run: |
           git config --global user.name "Your GitHub Actions Bot"
-          git config --global user.email "your-email@example.com"
+          git config --global user.email "homemanager99@gmail.com"
           git add playlist.m3u
-          git commit -m "Update playlist.m3u"
+          git diff --cached --quiet || git commit -m "Update playlist.m3u"
           git push origin main
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Automatically available to GitHub Actions
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
