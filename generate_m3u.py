@@ -1,49 +1,46 @@
-import os
-import subprocess
-import shutil
+import yt_dlp
 
-# Define the YouTube Live URLs
-youtube_urls = [
-    "https://www.youtube.com/@somoynews360/live",
-]
+def extract_m3u8_url(url):
+    """Extract M3U8 URL for a YouTube live stream using cookies."""
+    try:
+        ydl_opts = {
+            'quiet': True,
+            'format': 'best',
+            'noplaylist': True,
+            'cookies': 'cookies.txt',  # Path to the exported cookies file
+            'extractor_args': {
+                'youtube': {
+                    'live': True
+                }
+            }
+        }
 
-# Output M3U file path (this will be saved in the repository directory)
-output_file = "playlist.m3u"
-
-def extract_m3u8_links(youtube_urls):
-    """Extracts .m3u8 links from YouTube Live URLs."""
-    m3u8_links = []
-    for url in youtube_urls:
-        try:
-            print(f"Extracting stream for: {url}")
-            command = ["yt-dlp", "--cookies", "cookies.txt", "-g", url]
-            result = subprocess.run(command, capture_output=True, text=True)
-            if result.returncode == 0:
-                m3u8_links.append(result.stdout.strip())
-            else:
-                print(f"Failed to extract URL: {url}\n{result.stderr}")
-        except Exception as e:
-            print(f"Error extracting URL {url}: {e}")
-    return m3u8_links
-
-def generate_m3u_file(m3u8_links, output_file):
-    """Generates the #EXTM3U file."""
-    with open(output_file, "w") as f:
-        f.write("#EXTM3U\n")
-        for i, link in enumerate(m3u8_links, start=1):
-            f.write(f'#EXTINF:-1,YouTube Live Stream {i}\n')
-            f.write(f"{link}\n")
-    print(f"Playlist saved to {output_file}")
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info_dict = ydl.extract_info(url, download=False)
+            m3u8_url = info_dict.get('url', None)
+            return m3u8_url
+    except Exception as e:
+        print(f"Failed to extract URL: {url}\nError: {e}")
+        return None
 
 def main():
-    """Main function to generate the playlist."""
-    if not shutil.which("yt-dlp"):
-        print("yt-dlp is not installed. Install it using `pip install yt-dlp`.") 
-        return
+    youtube_urls = [
+        "https://www.youtube.com/@somoynews360/live",
+        # Add other URLs here
+    ]
 
-    m3u8_links = extract_m3u8_links(youtube_urls)
-    if m3u8_links:
-        generate_m3u_file(m3u8_links, output_file)
+    m3u_playlist = "#EXTM3U\n"
+    for index, url in enumerate(youtube_urls, 1):
+        print(f"Extracting stream for: {url}")
+        m3u8_url = extract_m3u8_url(url)
+        if m3u8_url:
+            m3u_playlist += f"#EXTINF:-1,Stream {index}\n{m3u8_url}\n"
+        else:
+            print(f"Failed to extract URL: {url}")
+
+    if m3u_playlist.strip() != "#EXTM3U":
+        with open("output.m3u", "w") as file:
+            file.write(m3u_playlist)
     else:
         print("No .m3u8 links were extracted. Exiting.")
 
