@@ -1,6 +1,6 @@
 import subprocess
 
-def extract_m3u8_url(youtube_url, cookies_file="cookies.json"):
+def extract_m3u8_url(youtube_url, cookies_file="cookies.txt"):
     """Extract the M3U8 URL for a given YouTube live stream using yt-dlp."""
     try:
         # Use yt-dlp to get the best m3u8 URL
@@ -22,7 +22,7 @@ def extract_m3u8_url(youtube_url, cookies_file="cookies.json"):
         print(e.stderr)
         return None
 
-def generate_m3u_playlist(youtube_urls, cookies_file="cookies.json"):
+def generate_m3u_playlist(youtube_urls, cookies_file="cookies.txt"):
     """Generate an M3U playlist from a list of YouTube live URLs."""
     m3u_playlist = "#EXTM3U\n"
     
